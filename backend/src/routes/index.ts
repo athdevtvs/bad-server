@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express'
 import { checkQueryOnObject } from '../middlewares/check-query-on-object'
+import { checkAdmin } from '../middlewares/check-admin'
 import NotFoundError from '../errors/not-found-error'
 import { getCsrfToken } from '../controllers/csrf-token'
 import { getOrders } from '../controllers/order'
@@ -17,8 +18,8 @@ router.use('/auth', authRouter)
 router.use('/product', productRouter)
 router.use('/order', auth, orderRouter)
 router.use('/upload', auth, uploadRouter)
-router.use('/customers', auth, customerRouter)
-router.get('/order/all', checkQueryOnObject, getOrders)
+router.use('/customers', auth, checkAdmin, customerRouter)
+router.get('/order/all', auth, checkAdmin, checkQueryOnObject, getOrders)
 router.get('/csrf-token', getCsrfToken)
 
 router.use((_req: Request, _res: Response, next: NextFunction) => {
