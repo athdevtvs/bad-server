@@ -18,21 +18,24 @@ import serveStatic from './middlewares/serverStatic'
 import routes from './routes'
 import { limiter } from './middlewares/limiter'
 
+const corsOptions = {
+    origin: ORIGIN_ALLOW,
+    credentials: true,
+    allowedHeaders: ['Authorization', 'Content-Type'],
+}
+
 const app = express()
 app.use(cookieParser(COOKIES_SECRET))
+app.use(cors(corsOptions))
+app.options('*', cors())
+
 app.use(limiter)
 app.use(json({ limit: MAX_BODY_SIZE }))
-app.use(
-    cors({
-        origin: ORIGIN_ALLOW,
-        credentials: true,
-        allowedHeaders: ['Authorization', 'Content-Type'],
-    })
-)
+
 app.use(serveStatic(path.join(__dirname, 'public')))
 app.use(urlencoded({ extended: true }))
 app.use(mongoSanitize())
-app.options('*', cors())
+
 app.use(routes)
 app.use(errors())
 app.use(errorHandler)
