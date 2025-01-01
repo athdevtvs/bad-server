@@ -67,7 +67,6 @@ const fileSizeCheck = (req: Request, res: any, next: any) => {
 const upload = multer({
     storage,
     fileFilter,
-    limits: { fileSize: MAX_FILE_SIZE },
 })
 
 export default { upload, fileSizeCheck }
