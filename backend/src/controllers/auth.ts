@@ -125,6 +125,7 @@ const logout = async (req: Request, res: Response, next: NextFunction) => {
         const expireCookieOptions = {
             ...REFRESH_TOKEN.cookie.options,
             maxAge: -1,
+            expires: new Date(0),
         }
         res.cookie(REFRESH_TOKEN.cookie.name, '', expireCookieOptions)
         res.status(200).json({
