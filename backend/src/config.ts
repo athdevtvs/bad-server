@@ -25,3 +25,5 @@ export const REFRESH_TOKEN = {
 }
 
 export const COOKIES_SECRET = 'cookie secret'
+
+export const MAX_BODY_SIZE = 1024 * 1024

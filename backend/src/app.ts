@@ -6,14 +6,16 @@ import express, { json, urlencoded } from 'express'
 import mongoose from 'mongoose'
 import mongoSanitize from 'express-mongo-sanitize'
 import path from 'path'
-import { DB_ADDRESS, PORT, ORIGIN_ALLOW, COOKIES_SECRET } from './config'
+import {
+    DB_ADDRESS,
+    PORT,
+    ORIGIN_ALLOW,
+    COOKIES_SECRET,
+    MAX_BODY_SIZE,
+} from './config'
 import errorHandler from './middlewares/error-handler'
 import serveStatic from './middlewares/serverStatic'
 import routes from './routes'
-
-const app = express()
-
-app.use(cookieParser(COOKIES_SECRET))
 
 const corsOptions = {
     origin: ORIGIN_ALLOW,
@@ -21,15 +23,13 @@ const corsOptions = {
     allowedHeaders: ['Authorization', 'Content-Type'],
 }
 
+const app = express()
+app.use(cookieParser(COOKIES_SECRET))
+app.use(json({ limit: MAX_BODY_SIZE }))
 app.use(cors(corsOptions))
-
 app.use(serveStatic(path.join(__dirname, 'public')))
-
 app.use(urlencoded({ extended: true }))
-app.use(json())
-
 app.use(mongoSanitize())
-
 app.use(routes)
 app.use(errors())
 app.use(errorHandler)
