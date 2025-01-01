@@ -1,7 +1,7 @@
 import { Request, Express } from 'express'
 import multer, { FileFilterCallback } from 'multer'
 import { join } from 'path'
-import { MAX_FILE_SIZE } from '../config'
+import { MAX_FILE_SIZE, MIN_FILE_SIZE } from '../config'
 
 type DestinationCallback = (error: Error | null, destination: string) => void
 type FileNameCallback = (error: Error | null, filename: string) => void
@@ -52,10 +52,20 @@ const fileFilter = (
     return cb(null, true)
 }
 
+const fileSizeCheck = (req: Request, res: any, next: any) => {
+    if (req.file && req.file.size < MIN_FILE_SIZE) {
+        return res.status(400).send({
+            message:
+                'Размер файла слишком мал. Минимальный размер файла — 2 КБ.',
+        })
+    }
+    next()
+}
+
 const upload = multer({
     storage,
     fileFilter,
     limits: { fileSize: MAX_FILE_SIZE },
 })
 
-export default upload
+export default { upload, fileSizeCheck }
