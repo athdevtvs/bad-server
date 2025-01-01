@@ -16,6 +16,7 @@ import {
 import errorHandler from './middlewares/error-handler'
 import serveStatic from './middlewares/serverStatic'
 import routes from './routes'
+import { limiter } from './middlewares/limiter'
 
 const corsOptions = {
     origin: ORIGIN_ALLOW,
@@ -25,6 +26,7 @@ const corsOptions = {
 
 const app = express()
 app.use(cookieParser(COOKIES_SECRET))
+app.use(limiter)
 app.use(json({ limit: MAX_BODY_SIZE }))
 app.use(cors(corsOptions))
 app.use(serveStatic(path.join(__dirname, 'public')))
