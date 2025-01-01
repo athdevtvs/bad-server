@@ -6,6 +6,7 @@ import Order, { IOrder } from '../models/order'
 import Product, { IProduct } from '../models/product'
 import User from '../models/user'
 import escapeRegExp from '../utils/escapeRegExp'
+import getPaginationParams from '../utils/getPaginationParams'
 
 // eslint-disable-next-line max-len
 // GET /orders?page=2&limit=5&sort=totalAmount&order=desc&orderDateFrom=2024-07-01&orderDateTo=2024-08-01&status=delivering&totalAmountFrom=100&totalAmountTo=1000&search=%2B1
@@ -29,12 +30,9 @@ export const getOrders = async (
             search,
         } = req.query
 
-        // Нормализовать и проверить страницу и ограничение
-        const maxLimit = 10
-        const parsedPage = Math.max(1, parseInt(page as string, 10))
-        const parsedLimit = Math.min(
-            Math.max(1, parseInt(limit as string, 10)),
-            maxLimit
+        const { parsedPage, parsedLimit } = getPaginationParams(
+            page?.toString(),
+            limit?.toString()
         )
 
         const filters: FilterQuery<Partial<IOrder>> = {}
@@ -167,12 +165,9 @@ export const getOrdersCurrentUser = async (
         const userId = res.locals.user._id
         const { search, page = 1, limit = 5 } = req.query
 
-        // Нормализовать и проверить страницу и ограничение
-        const maxLimit = 10
-        const parsedPage = Math.max(1, parseInt(page as string, 10))
-        const parsedLimit = Math.min(
-            Math.max(1, parseInt(limit as string, 10)),
-            maxLimit
+        const { parsedPage, parsedLimit } = getPaginationParams(
+            String(page),
+            String(limit)
         )
 
         const options = {
