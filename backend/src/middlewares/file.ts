@@ -53,15 +53,23 @@ const fileFilter = (
 }
 
 const fileSizeCheck = (req: Request, res: any, next: any) => {
-    if (req.file && req.file.size < MIN_FILE_SIZE) {
-        return res.status(400).send({
-            message:
-                'Размер файла слишком мал. Минимальный размер файла — 2 КБ.',
-        })
+    if (req.file) {
+        const fileSize = req.file.size
+        if (fileSize < MIN_FILE_SIZE) {
+            return res.status(400).send({
+                message:
+                    'Размер файла слишком мал. Минимальный размер файла — 2 КБ.',
+            })
+        }
+        if (fileSize > MAX_FILE_SIZE) {
+            return res.status(400).send({
+                message:
+                    'Размер файла слишком велик. Максимальный размер файла — 10 МБ.',
+            })
+        }
     }
     next()
 }
-
 const upload = multer({
     storage,
     fileFilter,
