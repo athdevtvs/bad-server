@@ -32,6 +32,7 @@ app.use(
 app.use(serveStatic(path.join(__dirname, 'public')))
 app.use(urlencoded({ extended: true }))
 app.use(mongoSanitize())
+app.options('*', cors())
 app.use(routes)
 app.use(errors())
 app.use(errorHandler)
