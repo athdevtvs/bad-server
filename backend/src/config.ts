@@ -23,3 +23,5 @@ export const REFRESH_TOKEN = {
         } as CookieOptions,
     },
 }
+
+export const COOKIES_SECRET = 'cookie secret'

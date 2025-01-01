@@ -6,14 +6,14 @@ import express, { json, urlencoded } from 'express'
 import mongoose from 'mongoose'
 import mongoSanitize from 'express-mongo-sanitize'
 import path from 'path'
-import { DB_ADDRESS, PORT, ORIGIN_ALLOW } from './config'
+import { DB_ADDRESS, PORT, ORIGIN_ALLOW, COOKIES_SECRET } from './config'
 import errorHandler from './middlewares/error-handler'
 import serveStatic from './middlewares/serverStatic'
 import routes from './routes'
 
 const app = express()
 
-app.use(cookieParser())
+app.use(cookieParser(COOKIES_SECRET))
 
 const corsOptions = {
     origin: ORIGIN_ALLOW,
