@@ -1,7 +1,6 @@
 import crypto from 'crypto'
 import { NextFunction, Request, Response } from 'express'
 import { constants } from 'http2'
-import jwt, { JwtPayload } from 'jsonwebtoken'
 import { Error as MongooseError } from 'mongoose'
 import { REFRESH_TOKEN } from '../config'
 import BadRequestError from '../errors/bad-request-error'
