@@ -9,6 +9,7 @@ import ConflictError from '../errors/conflict-error'
 import NotFoundError from '../errors/not-found-error'
 import UnauthorizedError from '../errors/unauthorized-error'
 import User from '../models/user'
+import { decodeRefreshToken } from '../utils/decodeRefreshToken'
 
 // POST /auth/login
 const login = async (req: Request, res: Response, next: NextFunction) => {
@@ -97,10 +98,8 @@ const deleteRefreshTokenInUser = async (
         throw new UnauthorizedError('Не валидный токен')
     }
 
-    const decodedRefreshTkn = jwt.verify(
-        rfTkn,
-        REFRESH_TOKEN.secret
-    ) as JwtPayload
+    const decodedRefreshTkn = decodeRefreshToken(rfTkn)
+
     const user = await User.findOne({
         _id: decodedRefreshTkn._id,
     }).orFail(() => new UnauthorizedError('Пользователь не найден в базе'))
