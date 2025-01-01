@@ -10,12 +10,19 @@ import {
 } from '../controllers/order'
 import auth, { roleGuardMiddleware } from '../middlewares/auth'
 import { validateOrderBody } from '../middlewares/validations'
+import { checkQueryOnObject } from '../middlewares/check-query-on-object'
 import { Role } from '../models/user'
 
 const orderRouter = Router()
 
 orderRouter.post('/', auth, validateOrderBody, createOrder)
-orderRouter.get('/all', auth, getOrders)
+orderRouter.get(
+    '/order/all',
+    auth,
+    roleGuardMiddleware(Role.Admin),
+    checkQueryOnObject,
+    getOrders
+)
 orderRouter.get('/all/me', auth, getOrdersCurrentUser)
 orderRouter.get(
     '/:orderNumber',
