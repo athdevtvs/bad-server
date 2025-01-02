@@ -21,17 +21,17 @@ import errorHandler from './middlewares/error-handler'
 import serveStatic from './middlewares/serverStatic'
 import routes from './routes'
 
+const app = express()
+
 const corsOptions = {
     origin: ORIGIN_ALLOW,
     credentials: true,
-    allowedHeaders: ['Authorization', 'Content-Type'],
+    allowedHeaders: ['Authorization', 'Content-Type', 'X-CSRF-Token'],
 }
 
-const app = express()
 app.set('trust proxy', 'loopback')
 app.use(cookieParser(COOKIES_SECRET))
 app.use(cors(corsOptions))
-app.options('*', cors())
 
 app.use(limiter)
 app.use(json({ limit: MAX_BODY_SIZE }))
@@ -39,6 +39,18 @@ app.use(json({ limit: MAX_BODY_SIZE }))
 app.use(serveStatic(path.join(__dirname, 'public')))
 app.use(urlencoded({ extended: true }))
 app.use(mongoSanitize())
+app.options('*', cors())
+app.use((req, _res, next) => {
+    console.log('=== Request ===')
+    console.log('Method:', req.method)
+    console.log('Path:', req.path)
+    console.log('Headers:', {
+        csrf: req.headers['x-csrf-token'],
+        cookie: req.headers.cookie,
+        authorization: req.headers.authorization,
+    })
+    next()
+})
 
 app.use(routes)
 app.use(errors())

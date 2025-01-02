@@ -67,6 +67,7 @@ const RouteComponent = () => {
     useEffect(() => {
         checkUserAuth()
             .unwrap()
+            .catch(() => {})
             .finally(() => authCheck())
     }, [checkUserAuth, authCheck])
 

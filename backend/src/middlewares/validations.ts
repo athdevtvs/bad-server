@@ -38,7 +38,7 @@ export const validateOrderBody = celebrate({
         phone: Joi.string()
             .required()
             .min(10)
-            .max(17)
+            .max(18)
             .pattern(phoneRegExp)
             .messages({
                 'string.empty': 'Не указан телефон',
