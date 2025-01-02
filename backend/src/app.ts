@@ -1,22 +1,25 @@
+import 'dotenv/config'
+
+import express, { json, urlencoded } from 'express'
+import mongoose from 'mongoose'
+import path from 'path'
+
 import { errors } from 'celebrate'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
-import 'dotenv/config'
-import express, { json, urlencoded } from 'express'
-import mongoose from 'mongoose'
 import mongoSanitize from 'express-mongo-sanitize'
-import path from 'path'
+
 import {
-    DB_ADDRESS,
-    PORT,
-    ORIGIN_ALLOW,
     COOKIES_SECRET,
+    DB_ADDRESS,
     MAX_BODY_SIZE,
+    ORIGIN_ALLOW,
+    PORT,
 } from './config'
+import { limiter } from './middlewares/limiter'
 import errorHandler from './middlewares/error-handler'
 import serveStatic from './middlewares/serverStatic'
 import routes from './routes'
-import { limiter } from './middlewares/limiter'
 
 const corsOptions = {
     origin: ORIGIN_ALLOW,
@@ -25,6 +28,7 @@ const corsOptions = {
 }
 
 const app = express()
+app.set('trust proxy', 'loopback')
 app.use(cookieParser(COOKIES_SECRET))
 app.use(cors(corsOptions))
 app.options('*', cors())
