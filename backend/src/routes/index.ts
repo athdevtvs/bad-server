@@ -16,7 +16,7 @@ const router = Router()
 router.use('/auth', authRouter)
 router.use('/product', doubleCsrfProtection, productRouter)
 router.use('/order', auth, orderRouter)
-router.use('/upload', auth, doubleCsrfProtection, uploadRouter)
+router.use('/upload', auth, uploadRouter)
 router.use('/customers', auth, customerRouter)
 router.get('/csrf-token', getCsrfToken)
 
