@@ -1,5 +1,6 @@
 import { Request, Express } from 'express'
 import multer, { FileFilterCallback } from 'multer'
+import { constants } from 'http2'
 import { join, extname } from 'path'
 import { faker } from '@faker-js/faker'
 import { MAX_FILE_SIZE, MIN_FILE_SIZE, ALLOWED_MIME_TYPES } from '../config'
@@ -29,7 +30,7 @@ const storage = multer.diskStorage({
         file: Express.Multer.File,
         cb: FileNameCallback
     ) => {
-        const uniqueFileName = faker.string.uuid() + extname(file.originalname)
+        const uniqueFileName = `${faker.string.uuid()}${extname(file.originalname)}`
         cb(null, uniqueFileName)
     },
 })
@@ -50,13 +51,13 @@ const fileSizeCheck = (req: Request, res: any, next: any) => {
     if (req.file) {
         const fileSize = req.file.size
         if (fileSize < MIN_FILE_SIZE) {
-            return res.status(400).send({
+            return res.status(constants.HTTP_STATUS_NOT_FOUND).send({
                 message:
                     'Размер файла слишком мал. Минимальный размер файла — 2 КБ.',
             })
         }
         if (fileSize > MAX_FILE_SIZE) {
-            return res.status(400).send({
+            return res.status(constants.HTTP_STATUS_NOT_FOUND).send({
                 message:
                     'Размер файла слишком велик. Максимальный размер файла — 10 МБ.',
             })
